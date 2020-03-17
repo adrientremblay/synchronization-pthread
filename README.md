@@ -1,4 +1,4 @@
-#Synchoronization PThread
+##Synchoronization PThread
 The following is a collection of sychronization programs written in C using the PThread library.
 The Goal is to demonstrate sychronization techniques.
 
@@ -31,8 +31,13 @@ Other threads cannot unlock their locks because the key is in use.  Only when th
 ## Progress
 
 ## DeadLock
+When two threads are stuck waiting for each other.
 
+## Race Condition
+Undetermenistic behaviour from threads.
 
+## Priority Inversion.
+When a higher priority thread waits behind a lower security one.
 
 
 https://randu.org/tutorials/threads/
