@@ -28,6 +28,8 @@ attempting to access the lock will be denied.  Then when the thread is done it r
 A mutex can be imagined as a lock with only one key.  When a thread gains a mutex it is taking the sole key for the lock and unlocking it's lock.
 Other threads cannot unlock their locks because the key is in use.  Only when the mutex is released are the other threads free to open their locks. 
 
+### 
+
 ## Progress
 
 ## DeadLock
@@ -39,5 +41,6 @@ Undetermenistic behaviour from threads.
 ## Priority Inversion.
 When a higher priority thread waits behind a lower security one.
 
+## Atomic operation
 
 https://randu.org/tutorials/threads/
