@@ -1,22 +1,17 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-#define RUNS 100
+#define RUNS 10000000
 
 void* count(void* arg);
-
 
 /* shared global variable */
 long long total = 0;
 
 /* add value to total RUNS times  */
 void* count(void* arg) {
-  long long *value_ptr = (long long*) arg;
-  long long value = *value_ptr;
+  long long value = *(long long*) arg;
 
-  
-  printf("%lld\n", value);
-  
   for (int i = 0 ; i < RUNS ; i++)
     total += value;
   
