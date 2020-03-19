@@ -15,7 +15,7 @@ void* count(void* arg) {
   long long value = *(long long*) arg;
 
   for (int i = 0 ; i < RUNS ; i++) {
-    /* end critcal section */ 
+    /* start critcal section */ 
     pthread_mutex_lock(&mutex); 
 
     total += value;
