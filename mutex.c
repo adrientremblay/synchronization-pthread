@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-#define RUNS 10000000 /* this value is large enough to cause a race condition */
+#define RUNS 100000000 /* this value is large enough to cause a race condition */
 
 void* count(void* arg);
 
-/* shared global variable */
+/* shared global variables */
 long long total = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* add value to total RUNS times  */
 void* count(void* arg) {
@@ -14,12 +15,14 @@ void* count(void* arg) {
 
   for (int i = 0 ; i < RUNS ; i++) {
     /* end critcal section */ 
+    pthread_mutex_lock(&mutex); 
 
     total += value;
     
+    pthread_mutex_unlock(&mutex); 
     /* end critcal section */ 
-  }
-  
+  } 
+
   pthread_exit(0);
 }
 
