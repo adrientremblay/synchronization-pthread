@@ -1,6 +1,15 @@
-##Synchoronization PThread
+## Synchoronization PThread
 The following is a collection of sychronization programs written in C using the PThread library.
 The Goal is to demonstrate sychronization techniques.
+
+### fork() vs pthread_create() 
+While both fork() and pthread_create() create new threads.  fork() creates a completely new process with it's own address space, source code, and stack to go with the new thread.  The forked process and the parent process will both execute the next line of code after the fork() after initialization.
+pthread_create() on the other hand creates a new thread under the calling process.  The new thread gets it's own stack and thread ID but shares will share it's virtual address space, open files, signal handlers, user and group IDs.  Therefore it is possible to communicate between threads created using pthread_create() using shared memory.
+
+As synchronization issues arise due to the use of shared memory I will be using pthread_create() to create my threads.
+
+## What is Synchronization?
+Ensuring that independent processes/threads begin to execute a designated block of code at the same logical time.
 
 ## Design Patterns
 - Different design patterns work best for different situations
@@ -28,15 +37,15 @@ attempting to access the lock will be denied.  Then when the thread is done it r
 A mutex can be imagined as a lock with only one key.  When a thread gains a mutex it is taking the sole key for the lock and unlocking it's lock.
 Other threads cannot unlock their locks because the key is in use.  Only when the mutex is released are the other threads free to open their locks. 
 
-### 
+### Semaphore
 
 ## Progress
 
 ## DeadLock
 When two threads are stuck waiting for each other.
 
-## Race Condition
-Undetermenistic behaviour from threads.
+## Nondeterminacy (Race Condition)
+Undetermenistic behaviour from threads or order of execution changes result.
 
 ## Priority Inversion.
 When a higher priority thread waits behind a lower security one.
@@ -44,3 +53,7 @@ When a higher priority thread waits behind a lower security one.
 ## Atomic operation
 
 https://randu.org/tutorials/threads/
+https://stackoverflow.com/questions/5514464/difference-between-pthread-and-fork-on-gnu-linux
+man clone
+man fork
+man pthread_create
