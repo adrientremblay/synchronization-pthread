@@ -32,7 +32,7 @@ int main() {
   pthread_create(&tid1, NULL, count, &val1);
   pthread_create(&tid2, NULL, count, &val2);
   
-  pthread_join(tid1, NULL); 
+  pthread_join(tid1, NULL); /* this is a form a synchronization as the main thread will wait until the two child threads are done executing */
   pthread_join(tid2, NULL); 
 
   printf("Total is %lld\n", total); /* this will return an incorrect value because of synchronization issues */

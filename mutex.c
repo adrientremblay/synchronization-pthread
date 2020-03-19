@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+
 #define RUNS 100000000 /* this value is large enough to cause a race condition */
 
 void* count(void* arg);
