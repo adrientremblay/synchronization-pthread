@@ -38,6 +38,10 @@ A mutex can be imagined as a lock with only one key.  When a thread gains a mute
 Other threads cannot unlock their locks because the key is in use.  Only when the mutex is released are the other threads free to open their locks. 
 
 ### Semaphore
+If a Mutex is a lock then a semaphore is a traffic light.  A 'binary semaphore' is essentially identical to a mutex but a counting semaphore can count values above 1.  When a semaphore
+
+V(s): {s = s+1} 
+P(s): [while(s == 0) {wait}; s = s-1]
 
 ## Progress
 
