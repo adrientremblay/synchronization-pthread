@@ -6,41 +6,41 @@
 #include <stdbool.h>
 
 #define MAXTHREADS 100
-#define READTIME 1
-#define WRITETIME 1
+#define READTIME 10
+#define WRITETIME 10
 
 int readCount = 0;
+bool runFlag = true;
 
 sem_t mutex;
 sem_t writeBlock;
 
 void* reader(void* arg){
-  while (true) {
-    sem_wait(&mutex); 
-      readCount ++;
-      if (readCount == 1) 
-        sem_wait(&writeBlock); 
-    sem_post(&mutex);  
-    /* C.S. read resource */
-    printf("Thread #%ld read resource\n", pthread_self());
-    sleep(READTIME);
-    sem_wait(&mutex);
-      readCount--;
-      if (readCount ==0)
-        sem_post(&writeBlock);
-    sem_post(&mutex);
-  }
-
+  sem_wait(&mutex); 
+    readCount ++;
+    if (readCount == 1) 
+      sem_wait(&writeBlock); 
+  sem_post(&mutex);  
+  /* C.S. read resource */
+  printf("Reader thread #%ld starting read\n", pthread_self());
+  sleep(READTIME);
+  printf("Reader thread #%ld ending read\n", pthread_self());
+  sem_wait(&mutex);
+    readCount--;
+    if (readCount ==0)
+      sem_post(&writeBlock);
+  sem_post(&mutex);
   pthread_exit(0);
 }
 
 void* writer(void* arg){
-  while (true) {
-    sem_wait(&writeBlock); 
-      printf("Thread #%ld wrote resource\n", pthread_self());
-      sleep(WRITETIME);
-    sem_post(&writeBlock);
-  }
+  sem_wait(&writeBlock); 
+    /* C.S. write resource */
+    printf("Writer thread #%ld starting write\n", pthread_self());
+    sleep(WRITETIME);
+    printf("Writer thread #%ld ending write\n", pthread_self());
+  sem_post(&writeBlock);
+  pthread_exit(0);
 }
 
 int main() {  
@@ -54,6 +54,8 @@ int main() {
   while ((c=getchar()) != EOF){
     if (nf == MAXTHREADS || c == 'q') {
       /* go to end of program */ 
+      runFlag = false;
+      printf("Termination sequence started, please wait for all threads to finish execution");
       break;
     } else if(c == 'r') {
       /* create a reader */ 
@@ -68,6 +70,7 @@ int main() {
   for (int i = 0 ; i < nf ; i++){
     pthread_join(pids[i], NULL); 
   }
-  
+
+  printf("Program Terminated");
   return 0;
 }
