@@ -10,35 +10,55 @@
 #define WRITETIME 10
 
 int readCount = 0;
+int writeCount = 0;
 
-sem_t mutex;
-sem_t writeBlock;
+sem_t mutex1, mutex2, readBlock, writeBlock, writePending;
 
 void* reader(void* arg){
-  sem_wait(&mutex); 
-    readCount ++;
-    if (readCount == 1) 
-      sem_wait(&writeBlock); 
-  sem_post(&mutex);  
+  sem_wait(&writePending);
+    sem_wait(&readBlock);
+      sem_wait(&mutex1);
+        readCount++;        
+        if(readCount == 1)
+          sem_wait(&writeBlock);
+      sem_post(&mutex1);
+    sem_post(&readBlock);
+  sem_post(&writePending);
+
   /* C.S. read resource */
   printf("Reader thread #%ld starting read\n", pthread_self());
   sleep(READTIME);
   printf("Reader thread #%ld ending read\n", pthread_self());
-  sem_wait(&mutex);
+
+  sem_wait(&mutex1);
     readCount--;
-    if (readCount ==0)
+    if (readCount == 0)
       sem_post(&writeBlock);
-  sem_post(&mutex);
+  sem_post(&mutex1);
+
   pthread_exit(0);
 }
 
 void* writer(void* arg){
+  sem_wait(&mutex2);
+    writeCount++;
+    if(writeCount == 1)
+      sem_wait(&readBlock);
+  sem_post(&mutex2);
+
   sem_wait(&writeBlock); 
     /* C.S. write resource */
     printf("Writer thread #%ld starting write\n", pthread_self());
     sleep(WRITETIME);
     printf("Writer thread #%ld ending write\n", pthread_self());
   sem_post(&writeBlock);
+
+  sem_wait(&mutex2);
+    writeCount--;
+    if(writeCount == 0)
+      sem_post(&readBlock);
+  sem_post(&mutex2);
+
   pthread_exit(0);
 }
 
@@ -47,8 +67,11 @@ int main() {
   int c, nf;
   nf = 0;
 
-  sem_init(&mutex, 0, 1);
+  sem_init(&mutex1, 0, 1);
+  sem_init(&mutex2, 0, 1);
+  sem_init(&readBlock, 0, 1);
   sem_init(&writeBlock, 0, 1);
+  sem_init(&writePending, 0, 1);
 
   while ((c=getchar()) != EOF){
     if (nf == MAXTHREADS || c == 'q') {
