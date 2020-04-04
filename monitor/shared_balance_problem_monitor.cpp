@@ -15,13 +15,13 @@ class Monitor {
     C slave;
 
     void run(void(C::*func)()) {
-      /*gaining mutex*/
+     /* gaining mutex */
       pthread_mutex_lock(&mutex);
-      /*running func*/
+     /* running func */
       void(C::*func_ptr)();
       func_ptr = func;
       (slave.*func_ptr)();
-      /*releasing mutex*/
+     /* releasing mutex */
       pthread_mutex_unlock(&mutex);
     };
 };
